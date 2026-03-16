@@ -1,0 +1,5 @@
+vendor/
+.env
+.idea
+access.log
+error.log
