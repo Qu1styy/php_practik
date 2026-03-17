@@ -1,0 +1,22 @@
+{
+    "name": "qu1styy/php_practik",
+    "description": "Practica",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Qu1styy",
+            "email": "ameserakov304@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.4 | ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Src\\": "core/Src/",
+            "": "app/"
+        }
+    }
+}
