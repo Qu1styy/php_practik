@@ -1,0 +1,37 @@
+устанавливать проект:
+composer create-project qu1styy/php_practik:dev-master
+
+http://wsr.ru/
+login : pkpkrges
+pass : idfKf9
+
+команда входа в консоль:
+ssh pkpkrges@192.168.14.205
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Starting tips (for linux):1. Open terminal and insert
+mkdir server
+2.1. First time insert:
+sshfs pkpkrges@192.168.14.205:/srv/users/pkpkrges ~/server/
+2.2. Another time insert:
+echo idfKf9 | sshfs -o password_stdin pkpkrges@192.168.14.205:/srv/users/pkpkrges ~/server/
