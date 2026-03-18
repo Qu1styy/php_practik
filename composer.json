@@ -1,12 +1,11 @@
 {
     "name": "qu1styy/php_practik",
-    "description": "Practica",
+    "description": "practik",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
-            "name": "Qu1styy",
-            "email": "ameserakov304@gmail.com"
+            "name": "qu1sty"
         }
     ],
     "minimum-stability": "dev",
