@@ -1,1 +1,3 @@
-<h2><?= $message ?? ''; ?></h2>
+<div class="container">
+    <h2><?= $message ?? ''; ?> <?= app()->auth::user()->name ?></h2>
+</div>

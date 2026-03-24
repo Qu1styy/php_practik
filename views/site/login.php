@@ -1,13 +1,33 @@
-<h2>Авторизация</h2>
-<h3><?= $message ?? ''; ?></h3>
+<div class="container mt-2">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
 
-<h3><?= app()->auth->user()->name ?? ''; ?></h3>
-<?php
-if (!app()->auth::check()):
-    ?>
-    <form method="post">
-        <label>Логин <input type="text" name="login"></label>
-        <label>Пароль <input type="password" name="password"></label>
-        <button>Войти</button>
-    </form>
+                    <h2 class="text-center mb-4">Авторизация</h2>
+
+                    <h3><?= $message ?? ''; ?></h3>
+
+                    <h3><?= app()->auth->user()->name ?? ''; ?></h3>
+                    <?php
+                    if (!app()->auth::check()):
+                    ?>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Логин" name="login" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="password" class="form-control" placeholder="Пароль" name="password" required>
+                        </div>
+
+                        <button class="btn btn-primary w-100 ">Войти</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php endif;

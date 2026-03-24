@@ -18,13 +18,13 @@ class Site
 
     public function hello(): string
     {
-        return new View('site.hello', ['message' => 'hello working']);
+        return new View('site.hello', ['message' => 'Привет,']);
     }
 
     public function signup(Request $request): string
     {
         if ($request->method === 'POST' && User::create($request->all())) {
-            app()->route->redirect('/go');
+            app()->route->redirect('/login');
         }
         return new View('site.signup');
     }
@@ -37,7 +37,7 @@ class Site
         }
         //Если удалось аутентифицировать пользователя, то редирект
         if (Auth::attempt($request->all())) {
-            app()->route->redirect('/hello');
+            app()->route->redirect('/');
         }
         //Если аутентификация не удалась, то сообщение об ошибке
         return new View('site.login', ['message' => 'Неправильные логин или пароль']);
@@ -46,6 +46,40 @@ class Site
     public function logout(): void
     {
         Auth::logout();
-        app()->route->redirect('/hello');
+        app()->route->redirect('/');
+    }
+
+    public function profile(Request $request): string
+    {
+        if (!Auth::check()) {
+            app()->route->redirect('/login');
+        }
+        return new View('site.profile');
+    }
+
+    public function profileEdit(Request $request): string
+    {
+        if (!Auth::check()) {
+            app()->route->redirect('/login');
+        }
+
+        $user = Auth::user();
+
+        if ($request->method === 'POST') {
+
+            $user->surname = $request->surname;
+            $user->name = $request->name;
+            $user->patronymic = $request->patronymic;
+            $user->email = $request->email;
+            $user->date_birth = $request->date_birth;
+            $user->registration_address = $request->registration_address;
+            $user->gender_id = $request->gender_id;
+
+            $user->save();
+
+            app()->route->redirect('/profile');
+        }
+
+        return new View('site.profile_edit', ['user' => $user]);
     }
 }

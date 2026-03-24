@@ -10,11 +10,20 @@ class User extends Model implements IdentityInterface
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
+    protected $primaryKey = 'user_id';
     protected $fillable = [
+        'surname',
         'name',
+        'patronymic',
         'login',
-        'password'
+        'email',
+        'gender_id',
+        'password',
+        'registration_address',
+        'date_birth',
+        'password',
+        'user_id',
     ];
 
     protected static function booted()
@@ -28,13 +37,13 @@ class User extends Model implements IdentityInterface
     //Выборка пользователя по первичному ключу
     public function findIdentity(int $id)
     {
-        return self::where('id', $id)->first();
+        return self::where('user_id', $id)->first();
     }
 
     //Возврат первичного ключа
     public function getId(): int
     {
-        return $this->id;
+        return $this->user_id;
     }
 
     //Возврат аутентифицированного пользователя
@@ -42,5 +51,15 @@ class User extends Model implements IdentityInterface
     {
         return self::where(['login' => $credentials['login'],
             'password' => md5($credentials['password'])])->first();
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class, 'gender_id', 'gender_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
 }

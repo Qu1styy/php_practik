@@ -5,25 +5,38 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
     <title>Pop it MVC</title>
 </head>
 <body>
 <header>
-    <nav>
-        <a href="<?= app()->route->getUrl('/hello') ?>">Главная</a>
-        <?php
-        if (!app()->auth::check()):
-            ?>
-            <a href="<?= app()->route->getUrl('/login') ?>">Вход</a>
-            <a href="<?= app()->route->getUrl('/signup') ?>">Регистрация</a>
-        <?php
-        else:
-            ?>
-            <a href="<?= app()->route->getUrl('/logout') ?>">Выход (<?= app()->auth::user()->name ?>)</a>
-        <?php
-        endif;
-        ?>
-    </nav>
+    <div class="container">
+        <header class="py-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="<?= app()->route->getUrl('/') ?>" class="nav-link active"
+                                        aria-current="page">Главная</a></li>
+                <?php
+                if (!app()->auth::check()):
+                    ?>
+                    <li class="nav-item"><a href="<?= app()->route->getUrl('/signup') ?>"
+                                            class="nav-link">Регистрация</a></li>
+                    <li class="nav-item"><a href="<?= app()->route->getUrl('/login') ?>" class="nav-link">Вход</a></li>
+                <?php
+                else:
+                    ?>
+                    <li class="nav-item"><a href="<?= app()->route->getUrl('/profile') ?>" class="nav-link">Профиль</a>
+                    </li>
+                <?php
+                endif;
+                ?>
+            </ul>
+        </header>
+    </div>
+
 </header>
 <main>
     <?= $content ?? '' ?>

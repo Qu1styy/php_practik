@@ -1,10 +1,10 @@
 <?php
 return [
     'driver' => 'mysql',
-    'host' => 'localhost',
+    'host' => 'database',
     'database' => 'pkpkrges_m4',
-    'username' => 'pkpkrges',
-    'password' => 'idfKf9',
+    'username' => 'root',
+    'password' => 'tiger',
     'charset' => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix' => '',
