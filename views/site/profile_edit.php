@@ -1,6 +1,6 @@
 <div class="container mt-2">
-    <div class="card shadow">
-        <div class="card-body">
+    <div class="card shadow col-md-4">
+        <div class="card-body ">
             <h2 class="mb-4">Редактирование профиля</h2>
 
             <form method="post">

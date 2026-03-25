@@ -1,7 +1,7 @@
 <div class="container mt-2">
-    <div class="card shadow">
+    <div class="card shadow col-md-4">
         <div class="card-body">
-            <h2 class="mb-4">Профиль: <?= app()->auth::user()->name ?> <?= app()->auth::user()->patronymic ?></h2>
+            <h2 class="mb-4"><?= app()->auth::user()->name ?> <?= app()->auth::user()->patronymic ?></h2>
 
             <table class="table">
                 <tr>
