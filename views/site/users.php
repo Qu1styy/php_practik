@@ -1,7 +1,10 @@
 <div class="container mt-2">
     <div class="card shadow">
         <div class="card-body">
-            <h2 class="mb-4">Пользователи <a style="text-decoration: none" href="<?= app()->route->getUrl('/users/add') ?>">+</a></h2>
+            <h2 class="mb-4">
+                Пользователи
+                <a style="text-decoration: none" href="<?= app()->route->getUrl('/users/add') ?>">+</a>
+            </h2>
 
             <table class="table">
                 <tr>
@@ -13,36 +16,28 @@
                     <th>Адрес</th>
                     <th>Логин</th>
                     <th>Email</th>
-                    <th></th>
+                    <th>Пол</th>
+                    <th>Роль</th>
+
                 </tr>
 
                 <?php foreach ($users as $user): ?>
-                    <form method="post" action="<?= app()->route->getUrl('/users') ?>">
-                        <tr>
-                            <td>
+                    <tr>
+                        <td>
+                            <a href="<?= app()->route->getUrl('/user?id=' . $user->user_id) ?>">
                                 <?= $user->user_id ?>
-                                <input type="hidden" name="id" value="<?= $user->user_id ?>">
-                            </td>
-
-                            <td><input class="form-control form-control-sm" type="text" name="surname"
-                                       value="<?= $user->surname ?>"></td>
-                            <td><input class="form-control form-control-sm" type="text" name="name"
-                                       value="<?= $user->name ?>"></td>
-                            <td><input class="form-control form-control-sm" type="text" name="patronymic"
-                                       value="<?= $user->patronymic ?>"></td>
-                            <td><input class="form-control form-control-sm" type="date" name="date_birth"
-                                       value="<?= $user->date_birth ?>"></td>
-                            <td><input class="form-control form-control-sm" type="text" name="registration_address"
-                                       value="<?= $user->registration_address ?>"></td>
-                            <td><input class="form-control form-control-sm" type="text" name="login"
-                                       value="<?= $user->login ?>"></td>
-                            <td><input class="form-control form-control-sm" type="email" name="email"
-                                       value="<?= $user->email ?>"></td>
-                            <td>
-                                <button class="btn btn-primary" type="submit">Сохранить</button>
-                            </td>
-                        </tr>
-                    </form>
+                            </a>
+                        </td>
+                        <td><?= $user->surname ?></td>
+                        <td><?= $user->name ?></td>
+                        <td><?= $user->patronymic ?></td>
+                        <td><?= $user->date_birth ?></td>
+                        <td><?= $user->registration_address ?></td>
+                        <td><?= $user->login ?></td>
+                        <td><?= $user->email ?></td>
+                        <td><?= $user->gender->gender_name ?></td>
+                        <td><?= $user->role->role_name ?></td>
+                    </tr>
                 <?php endforeach; ?>
             </table>
 

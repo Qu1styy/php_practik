@@ -12,10 +12,10 @@ use Model\Gender;
 
 class Site
 {
-    public function index(Request $request): string
+    public function user(Request $request): string
     {
-        $posts = Post::where('id', $request->id)->get();
-        return (new View())->render('site.post', ['posts' => $posts]);
+        $users = User::where('user_id', $request->id)->get();
+        return (new View())->render('site.user', ['users' => $users]);
     }
 
     public function hello(): string
@@ -82,7 +82,10 @@ class Site
             app()->route->redirect('/profile');
         }
 
-        return new View('site.profile_edit', ['user' => $user]);
+        $roles = Role::all();
+        $genders = Gender::all();
+
+        return new View('site.profile_edit', ['user' => $user, 'roles' => $roles, 'genders' => $genders]);
     }
 
     public function users(Request $request): string
@@ -96,28 +99,6 @@ class Site
 
         if ($authUser->role_id != 1) {
             app()->route->redirect('/');
-            exit;
-        }
-
-        if ($request->method === 'POST') {
-
-            $user = User::find($request->id);
-
-            if ($user) {
-                $user->surname = $request->surname;
-                $user->name = $request->name;
-                $user->patronymic = $request->patronymic;
-                $user->date_birth = $request->date_birth;
-                $user->registration_address = $request->registration_address;
-                $user->gender_id = $request->gender_id;
-                $user->login = $request->login;
-                $user->email = $request->email;
-                $user->role_id = $request->role_id;
-
-                $user->save();
-            }
-
-            app()->route->redirect('/users');
             exit;
         }
 
@@ -148,7 +129,7 @@ class Site
             $user->patronymic = $request->patronymic;
             $user->login = $request->login;
             $user->email = $request->email;
-            $user->password = password_hash($request->password, PASSWORD_DEFAULT);
+            $user->password = $request->password;
             $user->date_birth = $request->date_birth;
             $user->registration_address = $request->registration_address;
             $user->gender_id = $request->gender_id;

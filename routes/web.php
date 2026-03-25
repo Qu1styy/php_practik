@@ -10,3 +10,4 @@ Route::add('GET', '/profile', [Controller\Site::class, 'profile']);
 Route::add(['GET', 'POST'], '/profile/edit', [Controller\Site::class, 'profileEdit'])->middleware('auth');
 Route::add(['GET', 'POST'], '/users', [Controller\Site::class, 'users'])->middleware('auth');
 Route::add(['GET', 'POST'], '/users/add', [Controller\Site::class, 'userAdd'])->middleware('auth');
+Route::add('GET', '/user', [Controller\Site::class, 'user'])->middleware('auth');

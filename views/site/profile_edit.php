@@ -23,9 +23,12 @@
                 <input type="text" name="registration_address" class="form-control mb-2"
                        value="<?= $user->registration_address ?>" placeholder="Адрес">
 
-                <select name="gender_id" class="form-control mb-2">
-                    <option value="1">Мужской</option>
-                    <option value="2">Женский</option>
+                <select name="gender_id" class="form-select mb-2">
+                    <?php foreach ($genders as $gender): ?>
+                        <option value="<?= $gender->gender_id ?>">
+                            <?= $gender->gender_name ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
                 <button class="btn btn-success">Сохранить</button>
