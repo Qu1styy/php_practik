@@ -13,7 +13,10 @@
     <title>Department it MVC</title>
 </head>
 <body>
+
 <header>
+    <div class="container mt-2">
+        <div class="card shadow col-md-14">
     <div class="container">
         <header class="py-3">
             <ul class="nav nav-pills">
@@ -28,15 +31,19 @@
                 <?php
                 else:
                     ?>
-                    <li class="nav-item"><a href="<?= app()->route->getUrl('/profile') ?>" class="nav-link">Профиль</a>
+
+                    <li class="nav-item "><a href="<?= app()->route->getUrl('/profile') ?>" class="nav-link">Профиль (<?= app()->auth::user()->name ?>)</a>
                     </li>
+                    <li class="ms-auto"><a href="<?= app()->route->getUrl('/logout') ?>" class="btn btn-danger">Выйти</a></li>
+
                 <?php
                 endif;
                 ?>
             </ul>
         </header>
     </div>
-
+        </div>
+    </div>
 </header>
 <main>
     <?= $content ?? '' ?>

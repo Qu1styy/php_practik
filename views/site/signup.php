@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card shadow">
-                <div class="card-body ">
+                <div class="card-body">
                     <h2 class="text-center mb-4">Регистрация</h2>
 
                     <?php if (!empty($message)): ?>
@@ -13,43 +13,54 @@
 
                     <form method="post">
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Фамилия" name="surname" required>
+                            <label class="form-label" for="fam">Фамилия:</label>
+                            <input id="fam" type="text" class="form-control" placeholder="Иванов" name="surname" required>
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Имя" name="name" required>
+                            <label class="form-label" for="name">Имя:</label>
+                            <input id="name" type="text" class="form-control" placeholder="Иван" name="name" required>
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Отчество" name="patronymic">
+                            <label class="form-label" for="otch">Отчество:</label>
+                            <input id="otch" type="text" class="form-control" placeholder="Иванович" name="patronymic">
                         </div>
 
                         <div class="mb-3">
-                            <select class="form-select" name="gender_id">
-                                <option value="1">Мужской</option>
-                                <option value="2">Женский</option>
+                            <label class="form-label" for="pol">Пол:</label>
+                            <select id="pol" name="gender_id" class="form-select">
+                                <?php foreach ($genders as $gender): ?>
+                                    <option value="<?= $gender->gender_id ?>">
+                                        <?= $gender->gender_name ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Адрес регистрации" name="registration_address">
+                            <label class="form-label" for="adres">Адрес регистрации:</label>
+                            <input id="adres" type="text" class="form-control" placeholder="Ул.Пушкина, дом 4" name="registration_address">
                         </div>
 
                         <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Email" name="email" required>
+                            <label class="form-label" for="email">Адрес регистрации:</label>
+                            <input id="email" type="email" class="form-control" placeholder="qwe@qwe.qwe" name="email" required>
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Логин" name="login" required>
+                            <label class="form-label" for="log">Логин:</label>
+                            <input id="log" type="text" class="form-control" placeholder="Login" name="login" required>
                         </div>
 
                         <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Пароль" name="password" required>
+                            <label class="form-label" for="pass">Пароль:</label>
+                            <input id="pass" type="password" class="form-control" placeholder="Password" name="password" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Дата рождения</label>
-                            <input type="date" class="form-control" name="date_birth">
+                            <label class="form-label" for="brd">Дата рождения:</label>
+                            <input  id="brd" type="date" class="form-control" name="date_birth">
                         </div>
 
                         <button class="btn btn-primary w-100 ">Зарегистрироваться</button>

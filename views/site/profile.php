@@ -5,10 +5,6 @@
 
             <table class="table">
                 <tr>
-                    <th>ID</th>
-                    <td><?= app()->auth::user()->user_id ?></td>
-                </tr>
-                <tr>
                     <th>Фамилия</th>
                     <td><?= app()->auth::user()->surname ?></td>
                 </tr>
@@ -30,7 +26,7 @@
                 </tr>
                 <tr>
                     <th>Дата рождения</th>
-                    <td><?= app()->auth::user()->date_birth ?></td>
+                    <td><?= date('d.m.Y', strtotime(app()->auth::user()->date_birth)) ?></td>
                 </tr>
                 <tr>
                     <th>Адрес</th>
@@ -46,7 +42,7 @@
                 </tr>
             </table>
 
-            <a href="<?= app()->route->getUrl('/logout') ?>" class="btn btn-danger">Выйти</a>
+
             <a href="<?= app()->route->getUrl('/profile/edit') ?>" class="btn btn-primary">Редактировать профиль</a>
 
         </div>

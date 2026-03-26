@@ -28,7 +28,12 @@ class Site
         if ($request->method === 'POST' && User::create($request->all())) {
             app()->route->redirect('/login');
         }
-        return new View('site.signup');
+
+        $genders = Gender::all();
+
+        return new View('site.signup', [ 'genders' => $genders] );
+
+
     }
 
     public function login(Request $request): string

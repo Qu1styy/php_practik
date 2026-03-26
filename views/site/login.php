@@ -14,12 +14,16 @@
                     ?>
 
                     <form method="post">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Логин" name="login" required>
-                        </div>
 
                         <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Пароль" name="password" required>
+                            <label for="log">Логин:</label>
+                            <input id="log" type="text" class="form-control" placeholder="Login" name="login" required>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="pass">Пароль:</label>
+                            <input id="pass" type="password" class="form-control" placeholder="Password" name="password" required>
                         </div>
 
                         <button class="btn btn-primary w-100 ">Войти</button>
