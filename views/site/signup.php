@@ -4,12 +4,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <h2 class="text-center mb-4">Регистрация</h2>
-
-                    <?php if (!empty($message)): ?>
-                        <div class="alert alert-info">
-                            <?= $message ?>
-                        </div>
-                    <?php endif; ?>
+                    <?= $message ?? ''; ?>
 
                     <form method="post">
                         <div class="mb-3">
@@ -29,13 +24,10 @@
 
                         <div class="mb-3">
                             <label class="form-label" for="pol">Пол:</label>
-                            <select id="pol" name="gender_id" class="form-select">
-                                <?php foreach ($genders as $gender): ?>
-                                    <option value="<?= $gender->gender_id ?>">
-                                        <?= $gender->gender_name ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <select id="pol" name="gender_id" class="form-control mb-2">
+                            <option value="1">Мужской</option>
+                            <option value="2">Женский</option>
+                        </select>
                         </div>
 
                         <div class="mb-3">
@@ -44,7 +36,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="email">Адрес регистрации:</label>
+                            <label class="form-label" for="email">Почта:</label>
                             <input id="email" type="email" class="form-control" placeholder="qwe@qwe.qwe" name="email" required>
                         </div>
 
@@ -60,7 +52,7 @@
 
                         <div class="mb-3">
                             <label class="form-label" for="brd">Дата рождения:</label>
-                            <input  id="brd" type="date" class="form-control" name="date_birth">
+                            <input  id="brd" type="date" class="form-control" name="date_birth" required>
                         </div>
 
                         <button class="btn btn-primary w-100 ">Зарегистрироваться</button>

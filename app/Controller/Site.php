@@ -9,6 +9,7 @@ use Model\User;
 use Src\Auth\Auth;
 use Model\Role;
 use Model\Gender;
+use Src\Validator\Validator;
 
 class Site
 {
@@ -25,8 +26,32 @@ class Site
 
     public function signup(Request $request): string
     {
-        if ($request->method === 'POST' && User::create($request->all())) {
-            app()->route->redirect('/login');
+        if ($request->method === 'POST') {
+
+            $validator = new Validator($request->all(), [
+                'surname' => ['required'],
+                'name' => ['required'],
+                'patronymic' => [],
+                'gender_id' => ['required'],
+                'registration_address' => [],
+                'email' => ['required', 'unique:users,email'],
+                'login' => ['required', 'unique:users,login'],
+                'password' => ['required'],
+                'date_birth' => ['required'],
+            ], [
+                'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально'
+            ]);
+
+            if($validator->fails()){
+                return new View('site.signup',
+                    ['message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)]);
+            }
+
+
+            if (User::create($request->all())) {
+                app()->route->redirect('/login');
+            }
         }
 
         $genders = Gender::all();
