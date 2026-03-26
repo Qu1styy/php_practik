@@ -7,6 +7,7 @@
                     <?= $message ?? ''; ?>
 
                     <form method="post">
+                        <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
                         <div class="mb-3">
                             <label class="form-label" for="fam">Фамилия:</label>
                             <input id="fam" type="text" class="form-control" placeholder="Иванов" name="surname" required>

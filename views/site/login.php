@@ -14,6 +14,7 @@
                     ?>
 
                     <form method="post">
+                        <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
 
                         <div class="mb-3">
                             <label for="log">Логин:</label>
