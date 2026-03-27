@@ -16,8 +16,9 @@
                     <th>Адрес</th>
                     <th>Логин</th>
                     <th>Email</th>
-                    <th>Пол</th>
                     <th>Роль</th>
+                    <th>Кафедры</th>
+                    <th>Дисциплины</th>
 
                 </tr>
 
@@ -35,8 +36,14 @@
                         <td><?= $user->registration_address ?></td>
                         <td><?= $user->login ?></td>
                         <td><?= $user->email ?></td>
-                        <td><?= $user->gender->gender_name ?></td>
                         <td><?= $user->role->role_name ?></td>
+                        <td><?php foreach ($user->department as $department): ?>
+                                <?= $department->department_name ?><br><br>
+                            <?php endforeach; ?></td>
+                        <td> <?php foreach ($user->discipline as $discipline): ?>
+                                <?= $discipline->discipline_name ?><br><br>
+                            <?php endforeach; ?></td>
+
                     </tr>
                 <?php endforeach; ?>
             </table>

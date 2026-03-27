@@ -4,6 +4,8 @@
             <h2 class="mb-4">Редактирование профиля</h2>
 
             <form method="post">
+                <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
+
                 <label class="form-label" for="sname">Фамилия:</label>
                 <input id="sname" type="text" name="surname" class="form-control mb-2"
                        value="<?= $user->surname ?>" placeholder="Фамилия">

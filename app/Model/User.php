@@ -10,8 +10,9 @@ class User extends Model implements IdentityInterface
 {
     use HasFactory;
 
-    public $timestamps = true;
+    public $timestamps = false;
     protected $primaryKey = 'user_id';
+
     protected $fillable = [
         'surname',
         'name',
@@ -62,4 +63,17 @@ class User extends Model implements IdentityInterface
     {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
+
+    public function discipline()
+    {
+        return $this->belongsToMany(Discipline::class, 'discipline_users', 'user_id', 'discipline_id'
+        );
+    }
+
+    public function department()
+    {
+        return $this->belongsToMany(Department::class, 'user_departments', 'user_id', 'department_id'
+        );
+    }
+
 }
