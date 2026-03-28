@@ -10,6 +10,10 @@ class MinValidator extends AbstractValidator
 
     public function rule(): bool
     {
+        if ($this->value === null || $this->value === '') {
+            return true;
+        }
+
         $min = (int)($this->args[0] ?? 0);
         return mb_strlen((string)$this->value) >= $min;
     }

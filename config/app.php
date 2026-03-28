@@ -9,9 +9,14 @@ return [
         'auth' => \Middlewares\AuthMiddleware::class,
     ],
     'validators' => [
-    'required' => \Validators\RequireValidator::class,
-    'unique' => \Validators\UniqueValidator::class,
+        'required' => \Validators\RequireValidator::class,
+        'unique' => \Validators\UniqueValidator::class,
         'min' => \Validators\MinValidator::class,
+        'max' => \Validators\MaxValidator::class,
+        'email' => \Validators\EmailValidator::class,
+        'login' => \Validators\LoginValidator::class,
+        'password' => \Validators\PasswordValidator::class,
+        'kirl' => \Validators\KirilValidator::class,
     ],
     'routeAppMiddleware' => [
         'csrf' => \Middlewares\CSRFMiddleware::class,

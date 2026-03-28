@@ -84,14 +84,14 @@ class Site
         if ($request->method === 'POST') {
 
             $validator = new Validator($request->all(), [
-                'surname' => ['required'],
-                'name' => ['required'],
-                'patronymic' => [],
+                'surname' => ['required', 'min:2', 'kirl'],
+                'name' => ['required', 'min:2', 'kirl'],
+                'patronymic' => ['min:2', 'kirl'],
                 'gender_id' => ['required'],
-                'registration_address' => [],
-                'email' => ['required', 'unique:users,email'],
-                'login' => ['required', 'unique:users,login'],
-                'password' => ['required', 'min:6'],
+                'registration_address' => ['min:5'],
+                'email' => ['required', 'min:5', 'unique:users,email', 'email'],
+                'login' => ['required', 'min:3', 'unique:users,login', 'login'],
+                'password' => ['required', 'min:6', 'password'],
                 'date_birth' => ['required'],
             ], [
                 'required' => 'Поле :field пусто',
