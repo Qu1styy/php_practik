@@ -3,8 +3,19 @@
         <div class="card-body">
             <h2 class="mb-4">
                 Пользователи
-                <a style="text-decoration: none" href="<?= app()->route->getUrl('/users/add') ?>">+</a>
+                <?php if (app()->auth::user()->role_id != 3): ?>
+                    <a style="text-decoration: none" href="<?= app()->route->getUrl('/users/add') ?>">+</a>
+                <?php endif; ?>
             </h2>
+            <form class="d-flex" method="get" action="<?= app()->route->getUrl('/users') ?>">
+                <input type="text" name="search" class="form-control me-2"
+                       value="<?= htmlspecialchars($search ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                       placeholder="Фамилия, логин или email">
+                <button class="btn btn-primary">Найти</button>
+            </form>
+            <?php if (count($users) === 0): ?>
+                <p class="mt-2 mb-0">Ничего не найдено</p>
+            <?php endif; ?>
 
             <table class="table">
                 <tr>
@@ -25,9 +36,13 @@
                 <?php foreach ($users as $user): ?>
                     <tr>
                         <td>
-                            <a href="<?= app()->route->getUrl('/user?id=' . $user->user_id) ?>">
+                            <?php if (app()->auth::user()->role_id == 3): ?>
                                 <?= $user->user_id ?>
-                            </a>
+                            <?php else: ?>
+                                <a href="<?= app()->route->getUrl('/user?id=' . $user->user_id) ?>">
+                                    <?= $user->user_id ?>
+                                </a>
+                            <?php endif; ?>
                         </td>
                         <td><?= $user->surname ?></td>
                         <td><?= $user->name ?></td>

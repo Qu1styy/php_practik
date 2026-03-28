@@ -19,9 +19,21 @@ class Site
     {
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->role_id == 3) {
+            app()->route->redirect('/users');
+            exit;
         }
 
         $user = User::find($request->id);
+
+        if (!$user) {
+            app()->route->redirect('/users');
+            exit;
+        }
 
         if ($request->method === 'POST') {
 
@@ -128,17 +140,47 @@ class Site
     {
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
         }
-        return new View('site.profile');
+
+        $user = Auth::user();
+        $avatarUrl = '';
+        $avatarDir = dirname(__DIR__, 2) . '/public/uploads/avatars';
+        $avatarExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+        foreach ($avatarExtensions as $extension) {
+            $avatarPath = $avatarDir . "/user_{$user->user_id}.{$extension}";
+            if (is_file($avatarPath)) {
+                $avatarUrl = "/uploads/avatars/user_{$user->user_id}.{$extension}?v=" . (filemtime($avatarPath) ?: time());
+                break;
+            }
+        }
+
+        return new View('site.profile', [
+            'avatarUrl' => $avatarUrl
+        ]);
     }
 
     public function profileEdit(Request $request): string
     {
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
         }
 
         $user = Auth::user();
+        $message = '';
+        $avatarUrl = '';
+        $avatarDir = dirname(__DIR__, 2) . '/public/uploads/avatars';
+        $avatarExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+        foreach ($avatarExtensions as $extension) {
+            $avatarPath = $avatarDir . "/user_{$user->user_id}.{$extension}";
+            if (is_file($avatarPath)) {
+                $avatarUrl = "/uploads/avatars/user_{$user->user_id}.{$extension}?v=" . (filemtime($avatarPath) ?: time());
+                break;
+            }
+        }
 
         if ($request->method === 'POST') {
 
@@ -150,15 +192,75 @@ class Site
             $user->registration_address = $request->registration_address;
             $user->gender_id = $request->gender_id;
 
-            $user->save();
+            if (!empty($_FILES['avatar']) && is_array($_FILES['avatar'])) {
+                $avatar = $_FILES['avatar'];
+                $avatarError = $avatar['error'] ?? UPLOAD_ERR_NO_FILE;
 
-            app()->route->redirect('/profile');
+                if ($avatarError != UPLOAD_ERR_NO_FILE) {
+                    if ($avatarError != UPLOAD_ERR_OK) {
+                        $message = 'Ошибка загрузки файла';
+                    } elseif (($avatar['size'] ?? 0) > 2097152) {
+                        $message = 'Размер файла больше 2 МБ';
+                    } elseif (empty($avatar['tmp_name']) || !is_uploaded_file($avatar['tmp_name'])) {
+                        $message = 'Некорректный файл';
+                    } else {
+                        $mimeType = mime_content_type($avatar['tmp_name']) ?: '';
+                        $newExtension = '';
+
+                        if ($mimeType == 'image/jpeg') {
+                            $newExtension = 'jpg';
+                        } elseif ($mimeType == 'image/png') {
+                            $newExtension = 'png';
+                        } elseif ($mimeType == 'image/webp') {
+                            $newExtension = 'webp';
+                        } else {
+                            $message = 'Можно загрузить только JPG, PNG или WEBP';
+                        }
+
+                        if ($message === '') {
+                            if (!is_dir($avatarDir)) {
+                                mkdir($avatarDir, 0755, true);
+                            }
+
+                            if (!is_dir($avatarDir)) {
+                                $message = 'Не удалось создать папку для аватарок';
+                            } else {
+                                $newAvatarPath = $avatarDir . "/user_{$user->user_id}.{$newExtension}";
+
+                                if (!move_uploaded_file($avatar['tmp_name'], $newAvatarPath)) {
+                                    $message = 'Не удалось сохранить аватарку';
+                                } else {
+                                    foreach ($avatarExtensions as $extension) {
+                                        $oldAvatarPath = $avatarDir . "/user_{$user->user_id}.{$extension}";
+                                        if ($oldAvatarPath != $newAvatarPath && is_file($oldAvatarPath)) {
+                                            @unlink($oldAvatarPath);
+                                        }
+                                    }
+                                    $avatarUrl = "/uploads/avatars/user_{$user->user_id}.{$newExtension}?v=" . time();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($message === '') {
+                $user->save();
+
+                app()->route->redirect('/profile');
+            }
         }
 
         $roles = Role::all();
         $genders = Gender::all();
 
-        return new View('site.profile_edit', ['user' => $user, 'roles' => $roles, 'genders' => $genders]);
+        return new View('site.profile_edit', [
+            'user' => $user,
+            'roles' => $roles,
+            'genders' => $genders,
+            'avatarUrl' => $avatarUrl,
+            'message' => $message
+        ]);
     }
 
     public function users(Request $request): string
@@ -169,16 +271,57 @@ class Site
         }
 
         $authUser = Auth::user();
+        $query = $request->all()['search'] ?? '';
 
-        if ($authUser->role_id == 1) {
-            $users = User::where('user_id', '!=', $authUser->user_id)->get();
+        if (!empty($query)) {
+            if ($authUser->role_id == 1) {
+                $users = User::where('user_id', '!=', $authUser->user_id)
+                    ->where(function ($searchQuery) use ($query) {
+                        $searchQuery->where('surname', 'LIKE', "%$query%")
+                            ->orWhere('name', 'LIKE', "%$query%")
+                            ->orWhere('patronymic', 'LIKE', "%$query%")
+                            ->orWhere('login', 'LIKE', "%$query%")
+                            ->orWhere('email', 'LIKE', "%$query%")
+                            ->orWhereHas('department', function ($departmentQuery) use ($query) {
+                                $departmentQuery->where('department_name', 'LIKE', "%$query%");
+                            })
+                            ->orWhereHas('discipline', function ($disciplineQuery) use ($query) {
+                                $disciplineQuery->where('discipline_name', 'LIKE', "%$query%");
+                            });
+                    })
+                    ->get();
+            } else {
+                $users = User::where('role_id', '!=', 1)
+                    ->where('user_id', '!=', $authUser->user_id)
+                    ->where(function ($searchQuery) use ($query) {
+                        $searchQuery->where('surname', 'LIKE', "%$query%")
+                            ->orWhere('name', 'LIKE', "%$query%")
+                            ->orWhere('patronymic', 'LIKE', "%$query%")
+                            ->orWhere('login', 'LIKE', "%$query%")
+                            ->orWhere('email', 'LIKE', "%$query%")
+                            ->orWhereHas('department', function ($departmentQuery) use ($query) {
+                                $departmentQuery->where('department_name', 'LIKE', "%$query%");
+                            })
+                            ->orWhereHas('discipline', function ($disciplineQuery) use ($query) {
+                                $disciplineQuery->where('discipline_name', 'LIKE', "%$query%");
+                            });
+                    })
+                    ->get();
+            }
         } else {
-            $users = User::where('role_id', '!=', 1)
-                ->where('user_id', '!=', $authUser->user_id)
-                ->get();
+            if ($authUser->role_id == 1) {
+                $users = User::where('user_id', '!=', $authUser->user_id)->get();
+            } else {
+                $users = User::where('role_id', '!=', 1)
+                    ->where('user_id', '!=', $authUser->user_id)
+                    ->get();
+            }
         }
 
-        return (string)new View('site.users', ['users' => $users]);
+        return (string)new View('site.users', [
+            'users' => $users,
+            'search' => $query
+        ]);
     }
 
     public function userAdd(Request $request): string
@@ -190,10 +333,10 @@ class Site
 
         $authUser = Auth::user();
 
-//        if ($authUser->role_id != 1 ) {
-//            app()->route->redirect('/');
-//            exit;
-//        }
+        if ($authUser->role_id == 3 ) {
+            app()->route->redirect('/users');
+            exit;
+        }
 
         if ($request->method === 'POST') {
 
@@ -232,15 +375,57 @@ class Site
             exit;
         }
 
-        $departments = Department::all();
-        return (string)new View('site.departments', ['departments' => $departments]);
+        $query = $request->all()['search'] ?? '';
+
+        if (!empty($query)) {
+            $departments = Department::where('department_name', 'LIKE', "%$query%")
+                ->orWhere('department_description', 'LIKE', "%$query%")
+                ->orWhereHas('user', function ($userQuery) use ($query) {
+                    $userQuery->where('surname', 'LIKE', "%$query%")
+                        ->orWhere('name', 'LIKE', "%$query%")
+                        ->orWhere('patronymic', 'LIKE', "%$query%");
+                })
+                ->get();
+        } else {
+            $departments = Department::all();
+        }
+
+        return (string)new View('site.departments', [
+            'departments' => $departments,
+            'search' => $query
+        ]);
 
     }
 
     public function department(Request $request): string
     {
-        $departments = Department::where('department_id', $request->id)->get();
-        return (new View())->render('site.department', ['departments' => $departments]);
+        if (!Auth::check()) {
+            app()->route->redirect('/login');
+            exit;
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->role_id == 3) {
+            app()->route->redirect('/departments');
+            exit;
+        }
+
+        $department = Department::find($request->id);
+
+        if (!$department) {
+            app()->route->redirect('/departments');
+            exit;
+        }
+
+        if ($request->method === 'POST') {
+            $department->department_name = $request->department_name;
+            $department->department_description = $request->department_description;
+            $department->save();
+
+            app()->route->redirect('/departments');
+        }
+
+        return (string)new View('site.department', ['department' => $department]);
     }
 
     public function departmentAdd(Request $request): string
@@ -248,6 +433,12 @@ class Site
 
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->role_id == 3) {
+            app()->route->redirect('/departments');
             exit;
         }
 
@@ -271,13 +462,55 @@ class Site
             exit;
         }
 
-        $disciplines = Discipline::all();
-        return (string)new View('site.disciplines', ['disciplines' => $disciplines]);
+        $query = $request->all()['search'] ?? '';
+
+        if (!empty($query)) {
+            $disciplines = Discipline::where('discipline_name', 'LIKE', "%$query%")
+                ->orWhere('discipline_description', 'LIKE', "%$query%")
+                ->orWhereHas('user', function ($userQuery) use ($query) {
+                    $userQuery->where('surname', 'LIKE', "%$query%")
+                        ->orWhere('name', 'LIKE', "%$query%")
+                        ->orWhere('patronymic', 'LIKE', "%$query%");
+                })
+                ->get();
+        } else {
+            $disciplines = Discipline::all();
+        }
+
+        return (string)new View('site.disciplines', [
+            'disciplines' => $disciplines,
+            'search' => $query
+        ]);
     }
     public function discipline(Request $request): string
     {
-        $disciplines = Discipline::where('discipline_id', $request->id)->get();
-        return (new View())->render('site.discipline', ['disciplines' => $disciplines]);
+        if (!Auth::check()) {
+            app()->route->redirect('/login');
+            exit;
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->role_id == 3) {
+            app()->route->redirect('/disciplines');
+            exit;
+        }
+
+        $discipline = Discipline::find($request->id);
+
+        if (!$discipline) {
+            app()->route->redirect('/disciplines');
+            exit;
+        }
+
+        if ($request->method === 'POST') {
+            $discipline->discipline_name = $request->discipline_name;
+            $discipline->discipline_description = $request->discipline_description;
+            $discipline->save();
+
+            app()->route->redirect('/disciplines');
+        }
+
+        return (string)new View('site.discipline', ['discipline' => $discipline]);
     }
 
     public function disciplineAdd(Request $request): string
@@ -285,6 +518,12 @@ class Site
 
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->role_id == 3) {
+            app()->route->redirect('/disciplines');
             exit;
         }
 

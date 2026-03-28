@@ -15,9 +15,9 @@ Route::add(['GET', 'POST'], '/users/add', [Controller\Site::class, 'userAdd'])->
 Route::add(['GET', 'POST'], '/user', [Controller\Site::class, 'user'])->middleware('auth');
 
 Route::add(['GET', 'POST'], '/departments', [Controller\Site::class, 'departments'])->middleware('auth');
-Route::add('GET', '/department', [Controller\Site::class, 'department'])->middleware('auth');
+Route::add(['GET', 'POST'], '/department', [Controller\Site::class, 'department'])->middleware('auth');
 Route::add(['GET', 'POST'], '/department/add', [Controller\Site::class, 'departmentAdd'])->middleware('auth');
 
 Route::add(['GET', 'POST'], '/disciplines', [Controller\Site::class, 'disciplines'])->middleware('auth');
-Route::add('GET', '/discipline', [Controller\Site::class, 'discipline'])->middleware('auth');
+Route::add(['GET', 'POST'], '/discipline', [Controller\Site::class, 'discipline'])->middleware('auth');
 Route::add(['GET', 'POST'], '/discipline/add', [Controller\Site::class, 'disciplineAdd'])->middleware('auth');

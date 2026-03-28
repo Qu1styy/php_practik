@@ -1,27 +1,22 @@
 <div class="container mt-2">
-    <div class="card shadow col-md-12">
+    <div class="card shadow col-md-4">
         <div class="card-body">
-            <?php foreach ($departments as $department): ?>
-                <h2 class="mb-4"><?= $department->department_name ?> </h2>
+            <h2 class="mb-4">Редактирование кафедры</h2>
 
-                <table class="table">
+            <form method="post">
+                <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
 
-                    <tr>
-                        <th>ID</th>
-                        <td><?= $department->department_id ?></td>
-                    </tr>
-                    <tr>
-                        <th>Название</th>
-                        <td><?= $department->department_name ?></td>
-                    </tr>
-                    <tr>
-                        <th>Описание</th>
-                        <td><?= $department->department_description ?></td>
-                    </tr>
-                </table>
-            <?php endforeach; ?>
-            </table>
+                <label class="form-label" for="department_name">Название кафедры:</label>
+                <input id="department_name" type="text" name="department_name" class="form-control mb-2"
+                       value="<?= $department->department_name ?>" placeholder="Название кафедры">
+
+                <label class="form-label" for="department_description">Описание:</label>
+                <textarea id="department_description" name="department_description" class="form-control mb-2"
+                          rows="4" placeholder="Описание"><?= $department->department_description ?></textarea>
+
+                <button class="btn btn-success">Сохранить</button>
+                <a href="<?= app()->route->getUrl('/departments') ?>" class="btn btn-secondary">Назад</a>
+            </form>
         </div>
     </div>
 </div>
-

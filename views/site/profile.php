@@ -3,6 +3,13 @@
         <div class="card-body">
             <h2 class="mb-4"><?= app()->auth::user()->name ?> <?= app()->auth::user()->patronymic ?></h2>
 
+            <?php if (!empty($avatarUrl)): ?>
+                <div class="mb-3">
+                    <img src="<?= app()->route->getUrl($avatarUrl) ?>" alt="avatar" width="120" height="120"
+                         style="object-fit: cover; border-radius: 25%">
+                </div>
+            <?php endif; ?>
+
             <table class="table">
                 <tr>
                     <th>Фамилия</th>
