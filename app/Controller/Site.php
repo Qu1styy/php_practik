@@ -91,11 +91,12 @@ class Site
                 'registration_address' => [],
                 'email' => ['required', 'unique:users,email'],
                 'login' => ['required', 'unique:users,login'],
-                'password' => ['required'],
+                'password' => ['required', 'min:6'],
                 'date_birth' => ['required'],
             ], [
                 'required' => 'Поле :field пусто',
-                'unique' => 'Поле :field должно быть уникально'
+                'unique' => 'Поле :field должно быть уникально',
+                'min' => 'Поле :field должно быть не меньше минимальной длины'
             ]);
 
             if ($validator->fails()) {
