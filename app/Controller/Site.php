@@ -36,6 +36,69 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            if ($request->email == $user->email) {
+                $validator = new Validator($request->all(), [
+                    'surname' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'patronymic' => ['min:2', 'max:255', 'kirl'],
+                    'gender_id' => ['required'],
+                    'registration_address' => ['min:5', 'max:255'],
+                    'email' => ['required', 'min:5', 'max:255', 'email'],
+                    'date_birth' => ['required'],
+                    'role_id' => ['required'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            } else {
+                $validator = new Validator($request->all(), [
+                    'surname' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'patronymic' => ['min:2', 'max:255', 'kirl'],
+                    'gender_id' => ['required'],
+                    'registration_address' => ['min:5', 'max:255'],
+                    'email' => ['required', 'min:5', 'max:255', 'unique:users,email', 'email'],
+                    'date_birth' => ['required'],
+                    'role_id' => ['required'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            }
+
+            if ($validator->fails()) {
+                $user->surname = $request->surname;
+                $user->name = $request->name;
+                $user->patronymic = $request->patronymic;
+                $user->email = $request->email;
+                $user->date_birth = $request->date_birth;
+                $user->registration_address = $request->registration_address;
+                $user->gender_id = $request->gender_id;
+                $user->role_id = $request->role_id;
+
+                $roles = Role::all();
+                $genders = Gender::all();
+                $departments = Department::all();
+                $disciplines = Discipline::all();
+                $requestData = $request->all();
+                $userDepartments = $requestData['departments'] ?? [];
+                $userDisciplines = $requestData['disciplines'] ?? [];
+
+                return new View('site.user', [
+                    'user' => $user,
+                    'roles' => $roles,
+                    'genders' => $genders,
+                    'departments' => $departments,
+                    'disciplines' => $disciplines,
+                    'userDepartments' => $userDepartments,
+                    'userDisciplines' => $userDisciplines,
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
 
             $user->surname = $request->surname;
             $user->name = $request->name;
@@ -91,7 +154,7 @@ class Site
                 'registration_address' => ['min:5'],
                 'email' => ['required', 'min:5', 'unique:users,email', 'email'],
                 'login' => ['required', 'min:3', 'unique:users,login', 'login'],
-                'password' => ['required', 'min:6', 'password'],
+                'password' => ['required', 'min:8', 'password'],
                 'date_birth' => ['required'],
             ], [
                 'required' => 'Поле :field пусто',
@@ -184,6 +247,57 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            if ($request->email == $user->email) {
+                $validator = new Validator($request->all(), [
+                    'surname' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'patronymic' => ['min:2', 'max:255', 'kirl'],
+                    'gender_id' => ['required'],
+                    'registration_address' => ['min:5', 'max:255'],
+                    'email' => ['required', 'min:5', 'max:255', 'email'],
+                    'date_birth' => ['required'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            } else {
+                $validator = new Validator($request->all(), [
+                    'surname' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'patronymic' => ['min:2', 'max:255', 'kirl'],
+                    'gender_id' => ['required'],
+                    'registration_address' => ['min:5', 'max:255'],
+                    'email' => ['required', 'min:5', 'max:255', 'unique:users,email', 'email'],
+                    'date_birth' => ['required'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            }
+
+            if ($validator->fails()) {
+                $user->surname = $request->surname;
+                $user->name = $request->name;
+                $user->patronymic = $request->patronymic;
+                $user->email = $request->email;
+                $user->date_birth = $request->date_birth;
+                $user->registration_address = $request->registration_address;
+                $user->gender_id = $request->gender_id;
+                $roles = Role::all();
+                $genders = Gender::all();
+
+                return new View('site.profile_edit', [
+                    'user' => $user,
+                    'roles' => $roles,
+                    'genders' => $genders,
+                    'avatarUrl' => $avatarUrl,
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
 
             $user->surname = $request->surname;
             $user->name = $request->name;
@@ -339,7 +453,35 @@ class Site
             exit;
         }
 
+        $genders = Gender::all();
+        $roles = Role::all();
+
         if ($request->method === 'POST') {
+            $validator = new Validator($request->all(), [
+                'surname' => ['required', 'min:2', 'max:255', 'kirl'],
+                'name' => ['required', 'min:2', 'max:255', 'kirl'],
+                'patronymic' => ['min:2', 'max:255', 'kirl'],
+                'gender_id' => ['required'],
+                'registration_address' => ['min:5', 'max:255'],
+                'email' => ['required', 'min:5', 'max:255', 'unique:users,email', 'email'],
+                'login' => ['required', 'min:3', 'max:255', 'unique:users,login', 'login'],
+                'password' => ['required', 'min:8', 'max:255', 'password'],
+                'date_birth' => ['required'],
+                'role_id' => ['required'],
+            ], [
+                'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально',
+                'min' => 'Поле :field должно быть не меньше минимальной длины',
+                'max' => 'Поле :field превышает максимальную длину'
+            ]);
+
+            if ($validator->fails()) {
+                return (string)new View('site.user_add', [
+                    'genders' => $genders,
+                    'roles' => $roles,
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
 
             $user = new User();
 
@@ -358,9 +500,6 @@ class Site
 
             app()->route->redirect('/users');
         }
-
-        $genders = Gender::all();
-        $roles = Role::all();
 
         return (string)new View('site.user_add', [
             'genders' => $genders,
@@ -419,6 +558,38 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            if ($request->department_name == $department->department_name) {
+                $validator = new Validator($request->all(), [
+                    'department_name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'department_description' => ['required', 'min:5', 'max:2000'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            } else {
+                $validator = new Validator($request->all(), [
+                    'department_name' => ['required', 'min:2', 'max:255', 'unique:departments,department_name', 'kirl'],
+                    'department_description' => ['required', 'min:5', 'max:2000'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            }
+
+            if ($validator->fails()) {
+                $department->department_name = $request->department_name;
+                $department->department_description = $request->department_description;
+
+                return (string)new View('site.department', [
+                    'department' => $department,
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
+
             $department->department_name = $request->department_name;
             $department->department_description = $request->department_description;
             $department->save();
@@ -444,6 +615,21 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            $validator = new Validator($request->all(), [
+                'department_name' => ['required', 'min:2', 'max:255', 'unique:departments,department_name', 'kirl'],
+                'department_description' => ['required', 'min:5', 'max:2000'],
+            ], [
+                'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально',
+                'min' => 'Поле :field должно быть не меньше минимальной длины',
+                'max' => 'Поле :field превышает максимальную длину'
+            ]);
+
+            if ($validator->fails()) {
+                return (string)new View('site.department_add', [
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
 
             $department = new Department();
 
@@ -504,6 +690,38 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            if ($request->discipline_name == $discipline->discipline_name) {
+                $validator = new Validator($request->all(), [
+                    'discipline_name' => ['required', 'min:2', 'max:255', 'kirl'],
+                    'discipline_description' => ['required', 'min:5', 'max:2000'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            } else {
+                $validator = new Validator($request->all(), [
+                    'discipline_name' => ['required', 'min:2', 'max:255', 'unique:disciplines,discipline_name', 'kirl'],
+                    'discipline_description' => ['required', 'min:5', 'max:2000'],
+                ], [
+                    'required' => 'Поле :field пусто',
+                    'unique' => 'Поле :field должно быть уникально',
+                    'min' => 'Поле :field должно быть не меньше минимальной длины',
+                    'max' => 'Поле :field превышает максимальную длину'
+                ]);
+            }
+
+            if ($validator->fails()) {
+                $discipline->discipline_name = $request->discipline_name;
+                $discipline->discipline_description = $request->discipline_description;
+
+                return (string)new View('site.discipline', [
+                    'discipline' => $discipline,
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
+
             $discipline->discipline_name = $request->discipline_name;
             $discipline->discipline_description = $request->discipline_description;
             $discipline->save();
@@ -529,6 +747,21 @@ class Site
         }
 
         if ($request->method === 'POST') {
+            $validator = new Validator($request->all(), [
+                'discipline_name' => ['required', 'min:2', 'max:255', 'unique:disciplines,discipline_name', 'kirl'],
+                'discipline_description' => ['required', 'min:5', 'max:2000'],
+            ], [
+                'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально',
+                'min' => 'Поле :field должно быть не меньше минимальной длины',
+                'max' => 'Поле :field превышает максимальную длину'
+            ]);
+
+            if ($validator->fails()) {
+                return (string)new View('site.discipline_add', [
+                    'message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)
+                ]);
+            }
 
             $discipline = new Discipline();
 

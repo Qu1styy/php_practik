@@ -17,6 +17,6 @@ class LoginValidator extends AbstractValidator
 
         $login = trim((string)$this->value);
 
-        return preg_match('/^[a-zA-Z0-9]+$/', $login) === 1;
+        return preg_match('/^[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/', $login) === 1;
     }
 }

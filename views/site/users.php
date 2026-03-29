@@ -51,7 +51,7 @@
                         <td><?= $user->registration_address ?></td>
                         <td><?= $user->login ?></td>
                         <td><?= $user->email ?></td>
-                        <td><?= $user->role->role_name ?></td>
+                        <td><?= $user->role->role_name ?? '' ?></td>
                         <td><?php foreach ($user->department as $department): ?>
                                 <?= $department->department_name ?><br><br>
                             <?php endforeach; ?></td>

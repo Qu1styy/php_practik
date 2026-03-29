@@ -7,7 +7,7 @@ use Src\Validator\AbstractValidator;
 class KirilValidator extends AbstractValidator
 {
 
-    protected string $message = 'Поле :field не правильный формат';
+    protected string $message = 'Поле :field только кирилица';
 
     public function rule(): bool
     {
@@ -17,6 +17,6 @@ class KirilValidator extends AbstractValidator
 
         $name = trim((string)$this->value);
 
-        return preg_match('/^[А-Яа-яЁё\s-]+$/', $name) === 1;
+        return preg_match('/^[А-Яа-яЁё -]+$/u', $name) === 1;
     }
 }

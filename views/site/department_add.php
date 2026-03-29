@@ -2,6 +2,7 @@
     <div class="card shadow col-md-4">
         <div class="card-body">
             <h2 class="mb-4">Добавить кафедру</h2>
+            <?= $message ?? ''; ?>
 
             <form method="post">
                 <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>

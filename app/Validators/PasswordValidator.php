@@ -8,7 +8,7 @@ use Src\Validator\AbstractValidator;
 class PasswordValidator extends AbstractValidator
 {
 
-    protected string $message = 'Поле :field вводи без кириллицы, спецсимволов';
+    protected string $message = 'Поле :field вводи без кириллицы';
 
     public function rule(): bool
     {
@@ -18,6 +18,6 @@ class PasswordValidator extends AbstractValidator
 
         $pass = $this->value;
 
-        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/', $pass) === 1;
+        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/', $pass) === 1;
     }
 }
