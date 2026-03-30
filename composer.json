@@ -14,7 +14,8 @@
         "illuminate/database": "13.x-dev",
         "illuminate/events": "13.x-dev",
         "nikic/fast-route": "^2.0@dev",
-        "qu1styy/collect": "dev-main"
+        "qu1styy/collect": "dev-main",
+        "qu1styy/validator": "dev-main"
     },
     "autoload": {
         "psr-4": {
