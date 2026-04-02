@@ -55,6 +55,7 @@ class Auth
     public static function logout(): bool
     {
         Session::clear('user_id');
+        Session::clear('api_token');
         return true;
     }
 
@@ -64,6 +65,27 @@ class Auth
         $token = md5(time());
         Session::set('csrf_token', $token);
         return $token;
+    }
+
+    public static function generateApiToken(): string
+    {
+        $user = self::user();
+        if (!$user) {
+            return '';
+        }
+
+        $token = md5(time() . mt_rand(100000, 999999) . $user->getId());
+        Session::set('api_token', $token);
+        return $token;
+    }
+
+    //Проверка токена api
+    public static function checkApiToken(string $token): bool
+    {
+        if (empty($token) || !self::check()) {
+            return false;
+        }
+        return Session::get('api_token') === $token;
     }
 
 
